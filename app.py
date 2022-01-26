@@ -1,33 +1,40 @@
 import string
 
 
-def find_count_word(filename, data):
-  try: 
 
-    file = open(filename, "r")
-    read = file.readlines()
-    file.close()
-    to_string = str(read)
-    read_clean = to_string.translate(str.maketrans("", "", string.punctuation))
-    read_lowercase = read_clean.lower()
-    read_list = list(read_lowercase.split(" "))
-    for word in data:
-      searched_word = word.lower()
-      count = 0
-      for sentence in read_list:
-        line = sentence.split()
-        string_text = str(line)
-    if searched_word == line:
-        print("searched word:", searched_word, "string in text:", string_text)
-        count += 1
-    # print(searched_word, ":", count)
-    elif searched_word != string_text:
-      print("words don't match!")
-      
-  except FileExistsError:
-    print("where file?")
+def word_freq_in_file(filename):
+	map = dict()
+	file = open(filename)
+	lines = file.readlines()
 
-find_count_word("doc1.txt", ["for"])
+	line_pos = 1
+	for line in lines:
+		clean_line = line.translate(str.maketrans("", "", string.punctuation)).replace("\n"," ").lower()
+		
+		word_pos = 1
+		words = clean_line.split()
+		for word in words:
+			# first time we see a word, add to map
+			if word not in map:
+				map[word] = dict(count = 0, positions = list())
+				
+			# update counts and positions
+			map[word]["count"] = map[word]["count"] + 1
+			map[word]["positions"].append(dict(line = line_pos, word = word_pos))
+				
+			word_pos += 1
+		line_pos += 1
+			
+	#sort keys by count in descending order
+	sorted_words = sorted(map.keys(), key = lambda x: map[x]["count"], reverse = True)
+  #ADD HERE THE CONDITIONS. This line is a nice place to remove 'uninteresting words'
+	for word in sorted_words:
+		print("Found '{}' {} times: ".format(word, map[word]["count"]))
+		pos_count = 1
+		for position in map[word]["positions"]:
+			print("\t{}. Line {}, Word {}".format(pos_count, position["line"], position["word"]))
+			pos_count += 1
+			
+	
+word_freq_in_file("./data/doc1.txt")
 
-
-  
