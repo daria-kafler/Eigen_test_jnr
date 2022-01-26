@@ -6,11 +6,9 @@ def word_freq_in_file(filename):
 	map = dict()
 	file = open(filename)
 	lines = file.readlines()
-
 	line_pos = 1
 	for line in lines:
 		clean_line = line.translate(str.maketrans("", "", string.punctuation)).replace("\n"," ").lower()
-		
 		word_pos = 1
 		words = clean_line.split()
 		for word in words:
@@ -27,13 +25,12 @@ def word_freq_in_file(filename):
 			
 	#sort keys by count in descending order
 	sorted_words = sorted(map.keys(), key = lambda x: map[x]["count"], reverse = True)
-  #ADD HERE THE CONDITIONS. This line is a nice place to remove 'uninteresting words'
+  #ADD CONDITIONS HERE. remove 'uninteresting words', remove words that appear only once, etc.
 	for word in sorted_words:
-		print("Found '{}' {} times: ".format(word, map[word]["count"]))
-		pos_count = 1
+		print("Found '{}' {} times: ".format(word, map[word]["count"]))		
 		for position in map[word]["positions"]:
-			print("\t{}. Line {}, Word {}".format(pos_count, position["line"], position["word"]))
-			pos_count += 1
+			print("\t Line {}, Word {}".format(position["line"], position["word"]))
+			
 			
 	
 word_freq_in_file("./data/doc1.txt")
