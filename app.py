@@ -1,5 +1,7 @@
 import string
-
+import nltk
+from nltk.corpus import stopwords
+import glob
 
 
 def word_freq_in_file(filename):
@@ -7,6 +9,7 @@ def word_freq_in_file(filename):
 	file = open(filename)
 	lines = file.readlines()
 	line_pos = 1
+	en_stopwords = set(stopwords.words('english'))
 	for line in lines:
 		clean_line = line.translate(str.maketrans("", "", string.punctuation)).replace("\n"," ").lower()
 		word_pos = 1
@@ -25,13 +28,17 @@ def word_freq_in_file(filename):
 			
 	#sort keys by count in descending order
 	sorted_words = sorted(map.keys(), key = lambda x: map[x]["count"], reverse = True)
-  #ADD CONDITIONS HERE. remove 'uninteresting words', remove words that appear only once, etc.
 	for word in sorted_words:
-		print("Found '{}' {} times: ".format(word, map[word]["count"]))		
-		for position in map[word]["positions"]:
-			print("\t Line {}, Word {}".format(position["line"], position["word"]))
-			
-			
-	
-word_freq_in_file("./data/doc1.txt")
+  	#removes stopwords
+		if word not in en_stopwords and word not in ["went","werent","say"] and map[word]["count"] > 10:
+			print("Found '{}' {} times: ".format(word, map[word]["count"]))		
+			for position in map[word]["positions"]:
+				print("\t Line {}, Word {}, In Document {}".format(position["line"], position["word"],filename))
+
+
+all_files = glob.glob("./data/*.txt")
+for file in all_files:
+	print("THIS IS A NEW FILE {}".format(file))
+	word_freq_in_file(file)
+
 
